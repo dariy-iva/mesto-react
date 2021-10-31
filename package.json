@@ -39,5 +39,15 @@
   },
   "devDependencies": {
     "gh-pages": "^3.2.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dariy-iva/mesto-react.git/"
+  },
+  "author": "Daria Ivanova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dariy-iva/mesto-react/issues/"
+  },
+  "homepage": "https://github.com/mesto-react/#readme"
 }
