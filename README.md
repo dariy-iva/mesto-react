@@ -6,4 +6,4 @@
 
 Изображения на странице взяты с [сайта](https://unsplash.com) - коллекции бесплатных фотографий.
 
-* [Ссылка на проект в GH Pages]()
+* [Ссылка на проект в GH Pages](https://dariy-iva.github.io/mesto-react/)
