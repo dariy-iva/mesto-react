@@ -1,6 +1,6 @@
-@import url(./styles/blocks/keyframes/keyframes.css);
-@import url(./styles/vendor/fonts/Inter/inter.css);
 @import url(./styles/vendor/normalize.css);
+@import url(./styles/vendor/fonts/Inter/inter.css);
+@import url(./styles/blocks/keyframes/keyframes.css);
 @import url(./styles/blocks/link-hover/link-hover.css);
 @import url(./styles/blocks/body/body.css);
 @import url(./styles/blocks/page/page.css);
