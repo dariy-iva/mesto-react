@@ -71,7 +71,7 @@ class Api {
     }).then(this._verifyResolve);
   }
 
-  setDeletePost(postId) {
+  deletePost(postId) {
     return fetch(`${this._adress}/v1/${this._id}/cards/${postId}`, {
       method: "DELETE",
       headers: {
@@ -80,23 +80,11 @@ class Api {
     }).then(this._verifyResolve);
   }
 
-  setLikePost(postId) {
+  changeLikePostStatus(postId, isLiked) {
     return fetch(
       `${this._adress}/v1/${this._id}/cards/likes/${postId}`,
       {
-        method: "PUT",
-        headers: {
-          authorization: this._token
-        }
-      }
-    ).then(this._verifyResolve);
-  }
-
-  setDelLikePost(postId) {
-    return fetch(
-      `${this._adress}/v1/${this._id}/cards/likes/${postId}`,
-      {
-        method: "DELETE",
+        method: isLiked ? "DELETE" : "PUT",
         headers: {
           authorization: this._token
         }

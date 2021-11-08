@@ -1,24 +1,12 @@
 import React from "react";
 import { api } from "../../utils/Api";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import Card from "../Card/Card";
 
 export default function Main(props) {
-  const {onEditAvatar, onEditProfile, onAddPost, onCardClick} = props;
-  const [userName, setUserName] = React.useState();
-  const [userDescription, setUserDescription] = React.useState();
-  const [userAvatar, setUserAvatar] = React.useState();
+  const currentUser = React.useContext(CurrentUserContext);
+  const { onEditAvatar, onEditProfile, onAddPost, onCardClick } = props;
   const [posts, setPosts] = React.useState([]);
-
-  React.useEffect(() => {
-    api
-      .getUserInfo()
-      .then((data) => {
-        setUserName(data.name);
-        setUserDescription(data.about);
-        setUserAvatar(data.avatar);
-      })
-      .catch((err) => console.log(err));
-  }, []);
 
   React.useEffect(() => {
     api
@@ -29,17 +17,35 @@ export default function Main(props) {
       .catch((err) => console.log(err));
   }, []);
 
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    api.changeLikePostStatus(card._id, isLiked).then((newPost) => {
+      setPosts((state) => state.map((c) => (c._id === card._id ? newPost : c)));
+    });
+  }
+
+  function handleCardDelete(card) {
+    api.deletePost(card._id).then(() => {
+      setPosts((state) => state.filter((c) => (c._id !== card._id)));
+    });
+  }
+
   return (
     <main className="content">
       <section className="profile">
-        <img src={userAvatar} alt="аватар" className="profile__avatar" />
-        <div
-          className="profile__edit-avatar"
-          onClick={onEditAvatar}
-        ></div>
+        <img
+          src={currentUser.avatar || ""}
+          alt="аватар"
+          className="profile__avatar"
+        />
+        <div className="profile__edit-avatar" onClick={onEditAvatar}></div>
         <div className="profile__info">
-          <h1 className="profile__name">{userName}</h1>
-          <p className="profile__about-me">{userDescription}</p>
+          <h1 className="profile__name">
+            {currentUser.name || "Пользователь не найден"}
+          </h1>
+          <p className="profile__about-me">
+            {currentUser.about || "Пользователь не найден"}
+          </p>
           <button
             className="profile__edit-button"
             type="button"
@@ -54,7 +60,13 @@ export default function Main(props) {
       </section>
       <section className="posts">
         {posts.map((post) => (
-          <Card card={post} onCardClick={onCardClick} key={post._id} />
+          <Card
+            card={post}
+            onCardClick={onCardClick}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+            key={post._id}
+          />
         ))}
       </section>
     </main>

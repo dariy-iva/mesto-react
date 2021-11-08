@@ -1,7 +1,6 @@
 import React from "react";
 
-export default function PopupWithForm(props) {
-  const { name, title, children, isOpen, onClose } = props;
+export default function PopupWithForm({ name, title, children, isOpen, onClose }) {
   const popupClass = `popup ${isOpen && "popup_opened"}`;
   const formClass = `popup__form popup__form_contain_${name}`;
   return (
