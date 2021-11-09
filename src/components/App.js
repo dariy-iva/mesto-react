@@ -4,11 +4,11 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
-import PopupWithForm from "./PopupWithForm/PopupWithForm";
 import ImagePopup from "./ImagePopup/ImagePopup";
 import EditProfilePopup from "./EditProfilePopup/EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup/EditAvatarPopup";
 import AddPostPopup from "./AddPostPopup/AddPostPopup";
+import DeletePostPopup from "./DeletePostPopup/DeletePostPopup";
 
 export default function App() {
   const [currentUser, setCurrentUser] = React.useState({});
@@ -18,6 +18,9 @@ export default function App() {
   const [isAddPostPopupOpen, setIsAddPostPopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpenen, setIsEditAvatarPopupOpen] =
     React.useState(false);
+  const [isDeletePostPopupOpenen, setIsDeletePostPopupOpenen] =
+    React.useState(false);
+  const [isImagePopupOpenen, setIsImagePopupOpenen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [posts, setPosts] = React.useState([]);
 
@@ -39,19 +42,6 @@ export default function App() {
       .catch((err) => console.log(err));
   }, []);
 
-  function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    api.changeLikePostStatus(card._id, isLiked).then((newPost) => {
-      setPosts((state) => state.map((c) => (c._id === card._id ? newPost : c)));
-    });
-  }
-
-  function handleCardDelete(card) {
-    api.deletePost(card._id).then(() => {
-      setPosts((state) => state.filter((c) => c._id !== card._id));
-    });
-  }
-
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
   }
@@ -66,12 +56,27 @@ export default function App() {
 
   function handleCardClick(card) {
     setSelectedCard(card);
+    setIsImagePopupOpenen(true);
+  }
+
+  function handleCardDeleteClick(card) {
+    setIsDeletePostPopupOpenen(true);
+    setSelectedCard(card);
+  }
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    api.changeLikePostStatus(card._id, isLiked).then((newPost) => {
+      setPosts((state) => state.map((c) => (c._id === card._id ? newPost : c)));
+    });
   }
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPostPopupOpen(false);
+    setIsDeletePostPopupOpenen(false);
+    setIsImagePopupOpenen(false);
     setSelectedCard(null);
   }
 
@@ -102,6 +107,12 @@ export default function App() {
       .catch((err) => console.log(err));
   }
 
+  function handleDeletePost(card) {
+    api.deletePost(card._id).then(() => {
+      setPosts((state) => state.filter((c) => c._id !== card._id));
+    });
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -112,7 +123,7 @@ export default function App() {
           onAddPost={handleAddPostClick}
           onCardClick={handleCardClick}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onCardDeleteClick={handleCardDeleteClick}
           posts={posts}
         />
         <Footer />
@@ -126,13 +137,22 @@ export default function App() {
           onClose={closeAllPopups}
           onAddPost={handleAddPost}
         />
-        <PopupWithForm name="delete-post" title="Вы уверены?" />
+        <DeletePostPopup
+          isOpen={isDeletePostPopupOpenen}
+          onClose={closeAllPopups}
+          card={selectedCard}
+          onDeletePost={handleDeletePost}
+        />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpenen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
         />
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <ImagePopup
+          isOpen={isImagePopupOpenen}
+          card={selectedCard}
+          onClose={closeAllPopups}
+        />
       </div>
     </CurrentUserContext.Provider>
   );

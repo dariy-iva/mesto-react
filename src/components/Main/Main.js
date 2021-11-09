@@ -8,7 +8,7 @@ export default function Main({
   onAddPost,
   onCardClick,
   onCardLike,
-  onCardDelete,
+  onCardDeleteClick,
   posts,
 }) {
   const currentUser = React.useContext(CurrentUserContext);
@@ -47,7 +47,7 @@ export default function Main({
             card={post}
             onCardClick={onCardClick}
             onCardLike={onCardLike}
-            onCardDelete={onCardDelete}
+            onCardDeleteClick={onCardDeleteClick}
             key={post._id}
           />
         ))}
