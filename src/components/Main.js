@@ -1,6 +1,6 @@
 import React from "react";
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import Card from "../Card/Card";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import Card from "./Card";
 
 export default function Main({
   onEditAvatar,
@@ -21,7 +21,7 @@ export default function Main({
           alt="аватар"
           className="profile__avatar"
         />
-        <div className="profile__edit-avatar" onClick={onEditAvatar}></div>
+        <div className="profile__edit-avatar" onClick={onEditAvatar} />
         <div className="profile__info">
           <h1 className="profile__name">
             {currentUser.name || "Пользователь не найден"}
@@ -33,13 +33,13 @@ export default function Main({
             className="profile__edit-button"
             type="button"
             onClick={onEditProfile}
-          ></button>
+          />
         </div>
         <button
           className="profile__add-button"
           type="button"
           onClick={onAddPost}
-        ></button>
+        />
       </section>
       <section className="posts">
         {posts.map((post) => (

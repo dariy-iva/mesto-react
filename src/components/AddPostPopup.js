@@ -1,5 +1,5 @@
 import React from "react";
-import PopupWithForm from "../PopupWithForm/PopupWithForm";
+import PopupWithForm from "./PopupWithForm";
 
 export default function AddPostPopup({ isOpen, onClose, onAddPost }) {
   const [mesto, setMesto] = React.useState("");
@@ -21,7 +21,6 @@ export default function AddPostPopup({ isOpen, onClose, onAddPost }) {
       link,
     });
 
-    onClose();
     setMesto("");
     setLink("");
   }
@@ -30,6 +29,7 @@ export default function AddPostPopup({ isOpen, onClose, onAddPost }) {
     <PopupWithForm
       name="add-post"
       title="Новое место"
+      buttonSubmit="Создать"
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}

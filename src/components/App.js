@@ -1,14 +1,14 @@
 import React from "react";
-import { api } from "../utils/Api";
+import { api } from "../utils/api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import Header from "./Header/Header";
-import Main from "./Main/Main";
-import Footer from "./Footer/Footer";
-import ImagePopup from "./ImagePopup/ImagePopup";
-import EditProfilePopup from "./EditProfilePopup/EditProfilePopup";
-import EditAvatarPopup from "./EditAvatarPopup/EditAvatarPopup";
-import AddPostPopup from "./AddPostPopup/AddPostPopup";
-import DeletePostPopup from "./DeletePostPopup/DeletePostPopup";
+import Header from "./Header";
+import Main from "./Main";
+import Footer from "./Footer";
+import ImagePopup from "./ImagePopup";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
+import AddPostPopup from "./AddPostPopup";
+import DeletePostPopup from "./DeletePostPopup";
 
 export default function App() {
   const [currentUser, setCurrentUser] = React.useState({});
@@ -21,7 +21,7 @@ export default function App() {
   const [isDeletePostPopupOpenen, setIsDeletePostPopupOpenen] =
     React.useState(false);
   const [isImagePopupOpenen, setIsImagePopupOpenen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState(null);
+  const [selectedCard, setSelectedCard] = React.useState(null); // используется для передачи карточки как при удалении поста, так и при открытии попапа с картинкой
   const [posts, setPosts] = React.useState([]);
 
   React.useEffect(() => {
@@ -41,6 +41,15 @@ export default function App() {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  function closeAllPopups() {
+    setIsEditAvatarPopupOpen(false);
+    setIsEditProfilePopupOpen(false);
+    setIsAddPostPopupOpen(false);
+    setIsDeletePostPopupOpenen(false);
+    setIsImagePopupOpenen(false);
+    setSelectedCard(null);
+  }
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -66,18 +75,14 @@ export default function App() {
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    api.changeLikePostStatus(card._id, isLiked).then((newPost) => {
-      setPosts((state) => state.map((c) => (c._id === card._id ? newPost : c)));
-    });
-  }
-
-  function closeAllPopups() {
-    setIsEditAvatarPopupOpen(false);
-    setIsEditProfilePopupOpen(false);
-    setIsAddPostPopupOpen(false);
-    setIsDeletePostPopupOpenen(false);
-    setIsImagePopupOpenen(false);
-    setSelectedCard(null);
+    api
+      .changeLikePostStatus(card._id, isLiked)
+      .then((newPost) => {
+        setPosts((state) =>
+          state.map((c) => (c._id === card._id ? newPost : c))
+        );
+      })
+      .catch((err) => console.log(err));
   }
 
   function handleUpdateUser(data) {
@@ -85,6 +90,7 @@ export default function App() {
       .setUserInfo(data)
       .then((data) => {
         setCurrentUser(data);
+        closeAllPopups();
       })
       .catch((err) => console.log(err));
   }
@@ -94,23 +100,29 @@ export default function App() {
       .setUserAvatar(data)
       .then((data) => {
         setCurrentUser(data);
+        closeAllPopups();
       })
       .catch((err) => console.log(err));
   }
 
   function handleAddPost(data) {
     api
-      .setPost(data)
+      .addPost(data)
       .then((newPost) => {
         setPosts([newPost, ...posts]);
+        closeAllPopups();
       })
       .catch((err) => console.log(err));
   }
 
   function handleDeletePost(card) {
-    api.deletePost(card._id).then(() => {
-      setPosts((state) => state.filter((c) => c._id !== card._id));
-    });
+    api
+      .deletePost(card._id)
+      .then(() => {
+        setPosts((state) => state.filter((c) => c._id !== card._id));
+        closeAllPopups();
+      })
+      .catch((err) => console.log(err));
   }
 
   return (

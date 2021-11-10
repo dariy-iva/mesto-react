@@ -3,6 +3,7 @@ import React from "react";
 export default function PopupWithForm({
   name,
   title,
+  buttonSubmit,
   children,
   isOpen,
   onClose,
@@ -18,7 +19,7 @@ export default function PopupWithForm({
         <form name={name} className={formClass} onSubmit={onSubmit}>
           {children}
           <button type="submit" className="popup__submit-button">
-            Сохранить
+            {buttonSubmit || "Сохранить"}
           </button>
           <button
             type="reset"
